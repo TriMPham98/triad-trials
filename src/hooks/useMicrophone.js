@@ -13,19 +13,27 @@ export function useMicrophone({ expectedNotes, cardKey, onAllDetected }) {
   const expectedRef = useRef(expectedNotes)
   const onAllDetectedRef = useRef(onAllDetected)
   const nextIndexRef = useRef(0)
-  const inDebounceRef = useRef(false)
+  const inDebounceRef = useRef(true)
   const lastTickRef = useRef(0)
+  const debounceTimerRef = useRef(null)
 
   // Keep callback ref current
   useEffect(() => { onAllDetectedRef.current = onAllDetected }, [onAllDetected])
 
-  // Reset detection state on new card
+  // Reset detection state on new card, with a cooldown so sustained notes don't bleed over
+  const COOLDOWN_MS = 800
   useEffect(() => {
     expectedRef.current = expectedNotes
     nextIndexRef.current = 0
-    inDebounceRef.current = false
     setDetectedCount(0)
     setCurrentNote(null)
+
+    // Block detection during cooldown
+    clearTimeout(debounceTimerRef.current)
+    inDebounceRef.current = true
+    debounceTimerRef.current = setTimeout(() => {
+      inDebounceRef.current = false
+    }, COOLDOWN_MS)
   }, [cardKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Set up audio pipeline once on mount
@@ -107,6 +115,7 @@ export function useMicrophone({ expectedNotes, cardKey, onAllDetected }) {
       if (rafId) cancelAnimationFrame(rafId)
       if (audioCtx) audioCtx.close()
       if (stream) stream.getTracks().forEach(t => t.stop())
+      clearTimeout(debounceTimerRef.current)
     }
   }, []) // run once on mount
 

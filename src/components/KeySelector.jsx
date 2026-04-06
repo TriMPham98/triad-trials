@@ -8,8 +8,8 @@ const QUALITY_OPTIONS = [
 ]
 
 export default function KeySelector({ onStart }) {
-  const [selectedKey, setSelectedKey] = useState(null)
-  const [qualities, setQualities] = useState(['maj', 'min', 'dim'])
+  const [selectedKey, setSelectedKey] = useState('C')
+  const [qualities, setQualities] = useState(['maj'])
 
   function toggleQuality(q) {
     setQualities(prev =>
