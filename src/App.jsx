@@ -41,7 +41,7 @@ export default function App() {
   }
 
   return (
-    <div className="app">
+    <div className={`app${screen === 'stats' ? ' wide' : ''}`}>
       {screen === 'start' && <KeySelector onStart={handleStart} onStats={() => setScreen('stats')} />}
       {screen === 'stats' && <StatsScreen onBack={() => setScreen('start')} />}
       {screen === 'quiz' && (
