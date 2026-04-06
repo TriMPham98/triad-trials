@@ -16,7 +16,7 @@ body {
 
 .app {
   width: 100%;
-  max-width: 480px;
+  max-width: 560px;
   padding: 1.5rem;
 }
 
@@ -400,15 +400,16 @@ body {
 .missed-chord {
   font-weight: 700;
   color: #f9fafb;
-  min-width: 7rem;
+  flex: 0 0 7rem;
 }
 
 .missed-inv {
   color: #a78bfa;
-  min-width: 7rem;
+  flex: 0 0 7rem;
 }
 
 .missed-notes {
   color: #6b7280;
   font-size: 0.88rem;
+  white-space: nowrap;
 }

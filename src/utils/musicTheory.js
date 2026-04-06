@@ -79,5 +79,5 @@ export function generateQuiz(key, qualities = ['maj', 'min', 'dim']) {
     ;[questions[i], questions[j]] = [questions[j], questions[i]]
   }
 
-  return questions.slice(0, 10)
+  return questions.slice(0, 9)
 }
