@@ -70,6 +70,24 @@ body {
   color: #fff;
 }
 
+.key-btn.heat-low {
+  background: #2d1515;
+  border-color: #7f1d1d;
+  color: #fca5a5;
+}
+
+.key-btn.heat-mid {
+  background: #2d2210;
+  border-color: #78350f;
+  color: #fcd34d;
+}
+
+.key-btn.heat-high {
+  background: #12291a;
+  border-color: #14532d;
+  color: #86efac;
+}
+
 .key-btn.selected {
   background: #4c1d95;
   border-color: #a78bfa;

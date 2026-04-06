@@ -45,6 +45,18 @@ function noteName(semitone, chroma) {
   return chroma[(semitone % 12 + 12) % 12]
 }
 
+// Returns the chord names for all 7 diatonic degrees in a key,
+// used to compute per-key accuracy from stored stats.
+export function getDiatonicChordNames(key) {
+  const chroma = getChroma(key)
+  const rootIdx = SHARPS.indexOf(key) !== -1 ? SHARPS.indexOf(key) : FLATS.indexOf(key)
+  return DEGREE_INFO.map(({ quality }, degree) => {
+    const degreeRoot = (rootIdx + MAJOR_INTERVALS[degree]) % 12
+    const name = `${noteName(degreeRoot, chroma)} ${quality === 'maj' ? 'Major' : quality === 'min' ? 'Minor' : 'Diminished'}`
+    return { chordName: name, quality }
+  })
+}
+
 export function generateQuiz(key, qualities = ['maj', 'min', 'dim']) {
   const chroma = getChroma(key)
   const rootIdx = SHARPS.indexOf(key) !== -1 ? SHARPS.indexOf(key) : FLATS.indexOf(key)
