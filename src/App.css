@@ -1,0 +1,385 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #0f0f13;
+  color: #f0f0f5;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app {
+  width: 100%;
+  max-width: 480px;
+  padding: 1.5rem;
+}
+
+/* ── Key Selector ─────────────────────────────── */
+.key-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.app-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #a78bfa, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+.key-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.key-btn {
+  background: #1e1e2e;
+  border: 2px solid #2e2e42;
+  border-radius: 10px;
+  color: #d1d5db;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.7rem 0.3rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.key-btn:hover {
+  border-color: #7c3aed;
+  color: #fff;
+}
+
+.key-btn.selected {
+  background: #4c1d95;
+  border-color: #a78bfa;
+  color: #fff;
+}
+
+/* ── Quality Filter ───────────────────────────── */
+.quality-filter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.filter-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.quality-checks {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.quality-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #1e1e2e;
+  border: 2px solid #2e2e42;
+  border-radius: 20px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  user-select: none;
+}
+
+.quality-chip input[type="checkbox"] {
+  display: none;
+}
+
+.quality-chip.checked {
+  border-color: #a78bfa;
+  background: #2d1f5e;
+  color: #c4b5fd;
+}
+
+.quality-chip:hover {
+  border-color: #7c3aed;
+  color: #d1d5db;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.85rem 2.5rem;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.start-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.start-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+/* ── Timer Bar ────────────────────────────────── */
+@keyframes drain {
+  from {
+    width: 100%;
+    background-color: hsl(120, 75%, 42%);
+  }
+  to {
+    width: 0%;
+    background-color: hsl(0, 75%, 42%);
+  }
+}
+
+.timer-track {
+  width: 100%;
+  height: 10px;
+  background: #2e2e42;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.timer-fill {
+  height: 100%;
+  border-radius: 5px;
+  animation-name: drain;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* ── Quiz Card ────────────────────────────────── */
+.quiz-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.quiz-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.key-badge {
+  background: #1e1e2e;
+  border: 1px solid #2e2e42;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  color: #9ca3af;
+}
+
+.progress {
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.chord-display {
+  background: #1a1a2e;
+  border: 1px solid #2e2e42;
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.roman {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.chord-name {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #f9fafb;
+}
+
+.inversion-label {
+  font-size: 0.95rem;
+  color: #a78bfa;
+  font-weight: 600;
+}
+
+.notes-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.note-pill {
+  background: #2e2e42;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  color: #e0e7ff;
+  min-width: 3rem;
+  text-align: center;
+}
+
+.answer-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.btn-missed,
+.btn-got {
+  border: none;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 1rem;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.15s;
+}
+
+.btn-missed {
+  background: #2d1b1b;
+  color: #f87171;
+  border: 2px solid #7f1d1d;
+}
+
+.btn-missed:hover {
+  background: #3d1f1f;
+}
+
+.btn-got {
+  background: #1b2d1b;
+  color: #4ade80;
+  border: 2px solid #14532d;
+}
+
+.btn-got:hover {
+  background: #1f3d1f;
+}
+
+.btn-missed:active,
+.btn-got:active {
+  transform: scale(0.97);
+}
+
+/* ── Results ──────────────────────────────────── */
+.results-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.results-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #f9fafb;
+}
+
+.score-circle {
+  background: #1a1a2e;
+  border: 3px solid #7c3aed;
+  border-radius: 50%;
+  width: 130px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+}
+
+.score-num {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #a78bfa;
+}
+
+.score-denom {
+  font-size: 1.2rem;
+  color: #6b7280;
+  align-self: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.score-pct {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #d1d5db;
+}
+
+.missed-list {
+  width: 100%;
+  background: #1a1a2e;
+  border: 1px solid #2e2e42;
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.missed-list h3 {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+}
+
+.missed-item {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  font-size: 0.95rem;
+  padding: 0.4rem 0;
+  border-top: 1px solid #2e2e42;
+}
+
+.missed-chord {
+  font-weight: 700;
+  color: #f9fafb;
+  min-width: 7rem;
+}
+
+.missed-inv {
+  color: #a78bfa;
+  min-width: 7rem;
+}
+
+.missed-notes {
+  color: #6b7280;
+  font-size: 0.88rem;
+}

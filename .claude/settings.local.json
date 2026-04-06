@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/trimpham98/repos/triad-trials log --oneline)",
+      "Bash(git -C /Users/trimpham98/repos/triad-trials remote -v)",
+      "Bash(npm create:*)",
+      "Bash(npx create-vite@latest --template react .)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
