@@ -62,6 +62,8 @@ export function generateQuiz(key, qualities = ['maj', 'min', 'dim']) {
     const chordName = `${noteName(degreeRoot, chroma)} ${quality === 'maj' ? 'Major' : quality === 'min' ? 'Minor' : 'Diminished'}`
 
     for (const inv of INVERSIONS) {
+      // rootIndex: where the root note lands in the displayed notes array
+      const rootIndex = inv.noteOrder.indexOf(0)
       questions.push({
         key,
         roman,
@@ -69,6 +71,7 @@ export function generateQuiz(key, qualities = ['maj', 'min', 'dim']) {
         quality,
         inversion: inv.label,
         notes: inv.noteOrder.map(i => triadNotes[i]),
+        rootIndex,
       })
     }
   }

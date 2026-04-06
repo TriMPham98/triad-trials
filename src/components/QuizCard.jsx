@@ -5,7 +5,7 @@ import { useMicrophone } from '../hooks/useMicrophone'
 const TIMER_DURATION = 10 // seconds
 
 export default function QuizCard({ question, questionIndex, total, onAnswer }) {
-  const { key, roman, chordName, inversion, notes } = question
+  const { key, roman, chordName, inversion, notes, rootIndex } = question
 
   // Guard against double-calling onAnswer (mic + timer race)
   const answeredRef = useRef(false)
@@ -44,7 +44,7 @@ export default function QuizCard({ question, questionIndex, total, onAnswer }) {
           {notes.map((note, i) => (
             <span
               key={i}
-              className={`note-pill ${i < detectedCount ? 'detected' : ''}`}
+              className={`note-pill ${i === rootIndex ? 'root' : ''} ${i < detectedCount ? 'detected' : ''}`}
             >
               {note}
               {i < detectedCount && <span className="check"> ✓</span>}
