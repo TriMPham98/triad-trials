@@ -67,14 +67,6 @@ export default function QuizCard({ question, questionIndex, total, onAnswer }) {
         )}
       </div>
 
-      <div className="answer-buttons">
-        <button className="btn-missed" onClick={() => handleAnswer(false)}>
-          Missed it
-        </button>
-        <button className="btn-got" onClick={() => handleAnswer(true)}>
-          Got it
-        </button>
-      </div>
     </div>
   )
 }
