@@ -7,7 +7,7 @@ const QUALITY_OPTIONS = [
   { value: 'dim', label: 'Diminished' },
 ]
 
-export default function KeySelector({ onStart }) {
+export default function KeySelector({ onStart, onStats }) {
   const [selectedKey, setSelectedKey] = useState('C')
   const [qualities, setQualities] = useState(['maj'])
 
@@ -60,6 +60,10 @@ export default function KeySelector({ onStart }) {
         onClick={() => canStart && onStart(selectedKey, qualities)}
       >
         Start Quiz
+      </button>
+
+      <button className="stats-link" onClick={onStats}>
+        View lifetime stats
       </button>
     </div>
   )

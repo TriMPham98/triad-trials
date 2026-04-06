@@ -1,9 +1,12 @@
-export default function ResultsScreen({ results, onPlayAgain }) {
+export default function ResultsScreen({ results, stats, onPlayAgain }) {
   const correct = results.filter(r => r.correct).length
   const total = results.length
   const pct = Math.round((correct / total) * 100)
 
-  const missed = results.filter(r => !r.correct)
+  // All triads practiced this session, with their lifetime stats
+  const sessionKeys = results.map(r => `${r.question.chordName}|${r.question.inversion}`)
+  const uniqueKeys = [...new Set(sessionKeys)]
+  const sessionStats = uniqueKeys.map(key => stats?.[key]).filter(Boolean)
 
   return (
     <div className="results-screen">
@@ -15,16 +18,22 @@ export default function ResultsScreen({ results, onPlayAgain }) {
       </div>
       <div className="score-pct">{pct}%</div>
 
-      {missed.length > 0 && (
+      {sessionStats.length > 0 && (
         <div className="missed-list">
-          <h3>Review these:</h3>
-          {missed.map((r, i) => (
-            <div key={i} className="missed-item">
-              <span className="missed-chord">{r.question.chordName}</span>
-              <span className="missed-inv">{r.question.inversion}</span>
-              <span className="missed-notes">{r.question.notes.join(' – ')}</span>
-            </div>
-          ))}
+          <h3>Lifetime accuracy</h3>
+          {sessionStats.map((entry, i) => {
+            const lifetimePct = Math.round((entry.correct / entry.attempts) * 100)
+            return (
+              <div key={i} className="missed-item">
+                <span className="missed-chord">{entry.chordName}</span>
+                <span className="missed-inv">{entry.inversion}</span>
+                <span className={`stat-pct ${lifetimePct < 50 ? 'stat-low' : lifetimePct < 80 ? 'stat-mid' : 'stat-high'}`}>
+                  {lifetimePct}%
+                </span>
+                <span className="missed-notes">{entry.correct}/{entry.attempts}</span>
+              </div>
+            )
+          })}
         </div>
       )}
 
