@@ -244,6 +244,7 @@ body {
 
 .note-pill {
   background: #2e2e42;
+  border: 2px solid transparent;
   border-radius: 10px;
   font-size: 1.5rem;
   font-weight: 700;
@@ -251,6 +252,34 @@ body {
   color: #e0e7ff;
   min-width: 3rem;
   text-align: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.note-pill.detected {
+  background: #14532d;
+  border-color: #22c55e;
+  color: #4ade80;
+}
+
+.check {
+  font-size: 1.1rem;
+}
+
+/* ── Mic Status ───────────────────────────────── */
+.mic-status {
+  text-align: center;
+  min-height: 1.4rem;
+}
+
+.mic-text {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.mic-error {
+  color: #f87171;
+  font-style: normal;
 }
 
 .answer-buttons {
