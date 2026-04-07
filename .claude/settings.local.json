@@ -6,7 +6,8 @@
       "Bash(npm create:*)",
       "Bash(npx create-vite@latest --template react .)",
       "Bash(npm install:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(ls -la /Users/trimpham98/repos/triad-trials/*.md)"
     ]
   }
 }

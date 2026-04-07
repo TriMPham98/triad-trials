@@ -301,8 +301,7 @@ body {
 
 /* ── Mic Status ───────────────────────────────── */
 .mic-status {
-  text-align: center;
-  min-height: 1.4rem;
+  min-height: 1.6rem;
 }
 
 .mic-text {
@@ -314,6 +313,40 @@ body {
 .mic-error {
   color: #f87171;
   font-style: normal;
+}
+
+.mic-active-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.vu-track {
+  width: 100%;
+  height: 4px;
+  background: #2e2e42;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.vu-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(to right, #6366f1, #a78bfa);
+  transition: width 0.05s linear;
+}
+
+/* ── Fallback buttons ─────────────────────────── */
+.fallback-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  animation: fade-in 0.4s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .answer-buttons {

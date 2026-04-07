@@ -57,10 +57,29 @@ export function getDiatonicChordNames(key) {
   })
 }
 
-export function generateQuiz(key, qualities = ['maj', 'min', 'dim']) {
+// Weighted sampling without replacement.
+// Items with higher weights are more likely to be picked.
+function weightedSample(pool, weights, n) {
+  const remaining = pool.map((item, i) => ({ item, w: weights[i] }))
+  const result = []
+  for (let i = 0; i < Math.min(n, remaining.length); i++) {
+    const total = remaining.reduce((s, x) => s + x.w, 0)
+    let r = Math.random() * total
+    let idx = 0
+    while (idx < remaining.length - 1 && r > remaining[idx].w) {
+      r -= remaining[idx].w
+      idx++
+    }
+    result.push(remaining[idx].item)
+    remaining.splice(idx, 1)
+  }
+  return result
+}
+
+export function generateQuiz(key, qualities = ['maj', 'min', 'dim'], stats = {}) {
   const chroma = getChroma(key)
   const rootIdx = SHARPS.indexOf(key) !== -1 ? SHARPS.indexOf(key) : FLATS.indexOf(key)
-  const questions = []
+  const pool = []
 
   for (let degree = 0; degree < 7; degree++) {
     const degreeRoot = (rootIdx + MAJOR_INTERVALS[degree]) % 12
@@ -68,19 +87,13 @@ export function generateQuiz(key, qualities = ['maj', 'min', 'dim']) {
     if (!qualities.includes(quality)) continue
 
     const offsets = TRIAD_OFFSETS[quality]
-
-    // The three absolute note pitches for this triad
     const triadNotes = offsets.map(o => noteName(degreeRoot + o, chroma))
     const chordName = `${noteName(degreeRoot, chroma)} ${quality === 'maj' ? 'Major' : quality === 'min' ? 'Minor' : 'Diminished'}`
 
     for (const inv of INVERSIONS) {
-      // rootIndex: where the root note lands in the displayed notes array
       const rootIndex = inv.noteOrder.indexOf(0)
-      questions.push({
-        key,
-        roman,
-        chordName,
-        quality,
+      pool.push({
+        key, roman, chordName, quality,
         inversion: inv.label,
         notes: inv.noteOrder.map(i => triadNotes[i]),
         rootIndex,
@@ -88,11 +101,14 @@ export function generateQuiz(key, qualities = ['maj', 'min', 'dim']) {
     }
   }
 
-  // Fisher-Yates shuffle
-  for (let i = questions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[questions[i], questions[j]] = [questions[j], questions[i]]
-  }
+  // Weight each question by weakness: low accuracy → high weight
+  const MIN_WEIGHT = 0.2
+  const UNKNOWN_WEIGHT = 0.7
+  const weights = pool.map(q => {
+    const entry = stats[`${q.chordName}|${q.inversion}`]
+    if (!entry || entry.attempts === 0) return UNKNOWN_WEIGHT
+    return Math.max(MIN_WEIGHT, 1 - entry.correct / entry.attempts)
+  })
 
-  return questions.slice(0, 9)
+  return weightedSample(pool, weights, 9)
 }

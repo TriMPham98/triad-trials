@@ -1,34 +1,38 @@
 import { useEffect, useRef, useState } from 'react'
 import { autoCorrelate, freqToNoteName, noteToSemitone } from '../utils/pitchDetection'
 
-// Detects notes played into the mic and matches them in order against expectedNotes.
-// Resets detection state whenever cardKey changes (new question).
-// Calls onAllDetected() once all expected notes are matched in sequence.
+const COOLDOWN_MS = 800
+const NOTE_DEBOUNCE_MS = 350
+
+function computeRMS(buf) {
+  let sum = 0
+  for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i]
+  return Math.sqrt(sum / buf.length)
+}
+
 export function useMicrophone({ expectedNotes, cardKey, onAllDetected }) {
   const [detectedCount, setDetectedCount] = useState(0)
   const [currentNote, setCurrentNote] = useState(null)
-  const [micStatus, setMicStatus] = useState('requesting') // 'requesting' | 'active' | 'error'
+  const [micStatus, setMicStatus] = useState('requesting')
+  const [micLevel, setMicLevel] = useState(0) // 0–1 signal strength for VU meter
 
-  // Mutable refs for the detection loop (avoids stale closures)
   const expectedRef = useRef(expectedNotes)
   const onAllDetectedRef = useRef(onAllDetected)
   const nextIndexRef = useRef(0)
   const inDebounceRef = useRef(true)
-  const lastTickRef = useRef(0)
+  const lastPitchTickRef = useRef(0)
+  const lastLevelTickRef = useRef(0)
   const debounceTimerRef = useRef(null)
 
-  // Keep callback ref current
   useEffect(() => { onAllDetectedRef.current = onAllDetected }, [onAllDetected])
 
-  // Reset detection state on new card, with a cooldown so sustained notes don't bleed over
-  const COOLDOWN_MS = 800
+  // Reset detection state on new card
   useEffect(() => {
     expectedRef.current = expectedNotes
     nextIndexRef.current = 0
     setDetectedCount(0)
     setCurrentNote(null)
 
-    // Block detection during cooldown
     clearTimeout(debounceTimerRef.current)
     inDebounceRef.current = true
     debounceTimerRef.current = setTimeout(() => {
@@ -36,7 +40,6 @@ export function useMicrophone({ expectedNotes, cardKey, onAllDetected }) {
     }, COOLDOWN_MS)
   }, [cardKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Set up audio pipeline once on mount
   useEffect(() => {
     let cancelled = false
     let stream = null
@@ -63,18 +66,25 @@ export function useMicrophone({ expectedNotes, cardKey, onAllDetected }) {
           if (cancelled) return
           rafId = requestAnimationFrame(detect)
 
-          // Throttle heavy autocorrelation to ~20 fps
+          analyser.getFloatTimeDomainData(buffer)
           const now = performance.now()
-          if (now - lastTickRef.current < 50) return
-          lastTickRef.current = now
+
+          // VU meter at ~15 fps — cheap RMS, no autocorrelation needed
+          if (now - lastLevelTickRef.current >= 67) {
+            lastLevelTickRef.current = now
+            const rms = computeRMS(buffer)
+            setMicLevel(Math.min(1, rms / 0.08))
+          }
+
+          // Pitch detection throttled to ~20 fps
+          if (now - lastPitchTickRef.current < 50) return
+          lastPitchTickRef.current = now
 
           if (inDebounceRef.current) return
 
-          analyser.getFloatTimeDomainData(buffer)
           const freq = autoCorrelate(buffer, audioCtx.sampleRate)
           if (freq <= 0) return
 
-          // Note onset detected — debounce immediately so we don't re-fire
           inDebounceRef.current = true
           const noteName = freqToNoteName(freq)
           setCurrentNote(noteName)
@@ -91,15 +101,13 @@ export function useMicrophone({ expectedNotes, cardKey, onAllDetected }) {
               setDetectedCount(newIdx)
 
               if (newIdx >= expected.length) {
-                // All notes matched — signal success, stay in debounce forever
                 onAllDetectedRef.current()
                 return
               }
             }
           }
 
-          // Release debounce after 500 ms so user can play the next note
-          setTimeout(() => { inDebounceRef.current = false }, 500)
+          setTimeout(() => { inDebounceRef.current = false }, NOTE_DEBOUNCE_MS)
         }
 
         rafId = requestAnimationFrame(detect)
@@ -117,7 +125,7 @@ export function useMicrophone({ expectedNotes, cardKey, onAllDetected }) {
       if (stream) stream.getTracks().forEach(t => t.stop())
       clearTimeout(debounceTimerRef.current)
     }
-  }, []) // run once on mount
+  }, [])
 
-  return { detectedCount, currentNote, micStatus }
+  return { detectedCount, currentNote, micStatus, micLevel }
 }

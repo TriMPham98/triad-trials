@@ -4,7 +4,7 @@ import QuizCard from './components/QuizCard'
 import ResultsScreen from './components/ResultsScreen'
 import StatsScreen from './components/StatsScreen'
 import { generateQuiz } from './utils/musicTheory'
-import { applyResults } from './utils/stats'
+import { applyResults, loadStats } from './utils/stats'
 import './App.css'
 
 export default function App() {
@@ -15,7 +15,7 @@ export default function App() {
   const [stats, setStats] = useState(null)
 
   function handleStart(key, qualities) {
-    setQuestions(generateQuiz(key, qualities))
+    setQuestions(generateQuiz(key, qualities, loadStats()))
     setIndex(0)
     setResults([])
     setStats(null)
